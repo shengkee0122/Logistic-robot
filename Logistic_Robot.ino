@@ -32,7 +32,7 @@ const unsigned long delayTime4 = 10;     // Delay for slower rotation for servo4
 
 // Motor Speed Definitions (PWM values)
 #define HIGH_SPEED 200  // Speed for manual control movement
-#define MED_SPEED 130    // Speed for line following when turning
+#define MED_SPEED 155    // Speed for line following when turning
 #define LOW_SPEED 60    // Speed for line following on straight line
 
 // Line-following mode enabling
@@ -292,7 +292,7 @@ void followLine() {
 void gradualTurnLeft() {
   moveLeftMotorBackward(MED_SPEED / 2);  // Slow down left motor
   moveRightMotorForward(MED_SPEED);    // Speed up right motor
-  delay(155);                           // Keep turning
+  delay(125);                           // Keep turning
   while (digitalRead(IR_MIDDLEL) == 0) { // Continue until middle left sensor detects the line
     turnLeft(MED_SPEED);
   }
@@ -303,7 +303,7 @@ void gradualTurnLeft() {
 void gradualTurnRight() {
   moveLeftMotorForward(MED_SPEED);     // Speed up left motor
   moveRightMotorBackward(MED_SPEED / 2); // Slow down right motor
-  delay(155);                            // Keep turning
+  delay(125);                            // Keep turning
   while (digitalRead(IR_MIDDLER) == 0) {  // Continue until middle right sensor detects the line
     turnRight(MED_SPEED);
   }

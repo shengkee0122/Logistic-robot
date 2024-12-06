@@ -17,12 +17,12 @@ const unsigned long updateInterval = 20; // Delay for smooth rotation (milliseco
 const unsigned long delayTime4 = 10;     // Delay for slower rotation for servo4 (milliseconds)
 
 // Pin Definitions for Left Motor (A Part)
-#define IN1 6  // Left motor direction control
-#define IN2 7  // Left motor direction control
+#define IN1 6  
+#define IN2 7  
 
 // Pin Definitions for Right Motor (B Part)
-#define IN3 8  // Right motor direction control
-#define IN4 9  // Right motor direction control
+#define IN3 8  
+#define IN4 9  
 
 // Pin Definitions for IR Sensors
 #define IR_LEFT 26    // Left IR sensor
@@ -39,34 +39,34 @@ const unsigned long delayTime4 = 10;     // Delay for slower rotation for servo4
 bool lineFollowingMode = false;
 
 void setup() {
-  Serial.begin(9600);     // Start Serial Monitor communication
-  Serial1.begin(9600);    // Start Bluetooth communication on Serial1
+  Serial.begin(9600);     // Serial Monitor communication
+  Serial1.begin(9600);    // Communication with bluetooth
   Serial.println("Bluetooth Ready. Waiting for commands...");   // Check the status of bluetooth in serial monitor
 
-  // Initialize Servos
-  servo1.attach(11);      // Attach servo1 to pin 11
-  servo2.attach(12);      // Attach servo2 to pin 12
-  servo3.attach(10);      // Attach servo3 to pin 10
-  servo4.attach(13);      // Attach servo4 to pin 13
+  // Define Servos
+  servo1.attach(11);      
+  servo2.attach(12);      
+  servo3.attach(10);      
+  servo4.attach(13);      
 
   servo1.write(angle1);
   servo2.write(angle2);
   servo3.write(0);
   servo4.write(rotationSignal4);
 
-  // Initialize L298N pins
+  // Define L298N pins
   pinMode(IN1, OUTPUT);
   pinMode(IN2, OUTPUT);
   pinMode(IN3, OUTPUT);
   pinMode(IN4, OUTPUT);
 
-  // Initialize IR sensor pins
+  // Define IR sensor pins
   pinMode(IR_LEFT, INPUT);    //Left IR Sensor
   pinMode(IR_RIGHT, INPUT);   //Right IR Sensor
   pinMode(IR_MIDDLEL, INPUT);   //Middle Left IR Sensor
   pinMode(IR_MIDDLER, INPUT);   //Middle Right IR Sensor
 
-  // Stop the motors initially
+  // Stop the motors in beginning
   stopMotors();
 }
 
@@ -78,7 +78,7 @@ void loop() {
 
    // Check for incoming Bluetooth commands and operation
   if (Serial1.available()) {
-    char command = Serial1.read(); // Read a single character command from bluetooth
+    char command = Serial1.read(); // Read command from bluetooth
     Serial.print("Command received: ");
     Serial.println(command);
 
@@ -131,6 +131,7 @@ void loop() {
       Serial.println("Stopping Servo4...");
     }
 
+    //Movement control of the robot
     switch (command) {
       case 'u': // Move forward
         Serial.println("Moving Forward");
@@ -156,7 +157,7 @@ void loop() {
         Serial.println("Line Following Mode Activated");
         lineFollowingMode = true;
         break;
-      default: // Stop for any other input
+      default: 
         Serial.println("Stopping Motors");
         lineFollowingMode = false; // Exit line-following mode
         stopMotors();
@@ -164,7 +165,7 @@ void loop() {
     }
   }
 
-  // Rotate servo1 if commanded
+  // Rotate servo1
   if (millis() - lastTime1 > updateInterval) {
     if (rotateClockwise1 && angle1 < 180) {
       angle1++;
@@ -178,7 +179,7 @@ void loop() {
     lastTime1 = millis();
   }
 
-  // Rotate servo2 if commanded
+  // Rotate servo2
   if (millis() - lastTime2 > updateInterval) {
     if (rotateClockwise2 && angle2 < 180) {
       angle2++;
@@ -282,7 +283,6 @@ void followLine() {
     stopMotors();
   }
   else {
-    // All sensors off the line
     Serial.println("Line Lost - Stopping");
     stopMotors();
   }
@@ -290,10 +290,10 @@ void followLine() {
 
 // Gradual left turn
 void gradualTurnLeft() {
-  moveLeftMotorBackward(MED_SPEED / 2);  // Slow down left motor
-  moveRightMotorForward(MED_SPEED);    // Speed up right motor
-  delay(125);                           // Keep turning
-  while (digitalRead(IR_MIDDLEL) == 0) { // Continue until middle left sensor detects the line
+  moveLeftMotorBackward(MED_SPEED / 2);  
+  moveRightMotorForward(MED_SPEED);    
+  delay(125);                           
+  while (digitalRead(IR_MIDDLEL) == 0) { // Continue moving until middle left sensor detects the line
     turnLeft(MED_SPEED);
   }
   stopMotors();
@@ -301,10 +301,10 @@ void gradualTurnLeft() {
 
 // Gradual right turn
 void gradualTurnRight() {
-  moveLeftMotorForward(MED_SPEED);     // Speed up left motor
-  moveRightMotorBackward(MED_SPEED / 2); // Slow down right motor
-  delay(125);                            // Keep turning
-  while (digitalRead(IR_MIDDLER) == 0) {  // Continue until middle right sensor detects the line
+  moveLeftMotorForward(MED_SPEED);     
+  moveRightMotorBackward(MED_SPEED / 2); 
+  delay(125);                            
+  while (digitalRead(IR_MIDDLER) == 0) {  // Continue moving until middle right sensor detects the line
     turnRight(MED_SPEED);
   }
   stopMotors();
